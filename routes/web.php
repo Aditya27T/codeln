@@ -7,6 +7,7 @@ use App\Http\Controllers\SolveController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ForumController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -39,6 +40,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
+    Route::post('/forum/post', [ForumController::class, 'storePost'])->name('forum.post');
+    Route::post('/forum/reply', [ForumController::class, 'storeReply'])->name('forum.reply');
+    Route::post('/forum/like', [ForumController::class, 'like'])->name('forum.like');
 });
 
 // Admin routes with middleware

@@ -27,7 +27,7 @@
                     <x-nav-link :href="url('/questions')" :active="$active === 'questions'">
                         Challenges
                     </x-nav-link>
-                    <x-nav-link :href="url('/community')" :active="$active === 'community'">
+                    <x-nav-link :href="url('/forum')" :active="$active === 'community'">
                         Community
                     </x-nav-link>
                     <x-nav-link :href="url('/leaderboard')" :active="$active === 'leaderboard'">
