@@ -69,6 +69,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     
     // Users management
     Route::get('/users', [AdminController::class, 'users'])->name('users.index');
+    Route::get('/users/{id}/edit', [AdminController::class, 'usersEdit'])->name('users.edit');
+    Route::put('/users/{id}', [AdminController::class, 'usersUpdate'])->name('users.update');
+    Route::delete('/users/{id}', [AdminController::class, 'usersDestroy'])->name('users.destroy');
+    
 });
 
 require __DIR__.'/auth.php';
