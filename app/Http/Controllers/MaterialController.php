@@ -15,7 +15,17 @@ class MaterialController extends Controller
 
     public function show(Material $material)
     {
-        return view('materials.show', compact('material'));
+        // Render markdown ke HTML
+        try {
+            $converter = new \League\CommonMark\GithubFlavoredMarkdownConverter();
+            $contentHtml = $converter->convert($material->content);
+        } catch (\Throwable $e) {
+            $contentHtml = nl2br(e($material->content));
+        }
+        return view('materials.show', [
+            'material' => $material,
+            'contentHtml' => $contentHtml,
+        ]);
     }
 
     // Admin methods

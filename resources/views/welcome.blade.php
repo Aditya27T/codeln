@@ -26,19 +26,23 @@
         <div class="grid md:grid-cols-2 gap-8 items-center">
             <div>
                 <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">
-                    Learn to Code with <span class="text-yellow-300">Confidence</span>
+                    Belajar, Tantang Diri, dan Diskusi Bareng <span class="text-yellow-300">Komunitas Coding</span>
                 </h1>
                 <p class="text-xl md:text-2xl mb-8 opacity-90">
-                    Master programming through our interactive courses designed by industry experts.
+                    Platform latihan programming interaktif: mulai dari materi, tantangan coding, hingga forum diskusi dan leaderboard. Cocok untuk pemula maupun yang ingin leveling up!
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4">
                     <a href="{{ route('register') }}"
                        class="bg-white text-indigo-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold text-lg shadow-lg transition duration-300">
-                        Start Learning Free
+                        Daftar & Mulai Gratis
                     </a>
-                    <a href="{{ url('/login') }}"
+                    <a href="{{ url('/forum') }}"
                        class="bg-transparent border-2 border-white hover:bg-white hover:text-indigo-600 px-6 py-3 rounded-lg font-semibold text-lg shadow-lg transition duration-300">
-                        Explore Courses
+                        Gabung Forum
+                    </a>
+                    <a href="{{ url('/dashboard') }}"
+                       class="bg-yellow-400 text-indigo-900 hover:bg-yellow-300 px-6 py-3 rounded-lg font-semibold text-lg shadow-lg transition duration-300">
+                        Coba Coding Challenge
                     </a>
                 </div>
                 <div class="mt-8 flex items-center">
@@ -48,13 +52,40 @@
                         <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white" src="https://i.pravatar.cc/100?img=3" alt="">
                     </div>
                     <p class="ml-4 text-sm opacity-90">
-                        Join <span class="font-bold">10,000+</span> students learning with CodeIn
+                        Sudah <span class="font-bold">10,000+</span> member belajar & berbagi di CodeIn
                     </p>
                 </div>
             </div>
             <div class="hidden md:block">
-                <img src="https://imgs.search.brave.com/Um0zIsM5AQd4RvDzyDfzo7kIy62UgeF6bJEYJstrlCA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzk3LzA3Lzgx/LzM2MF9GXzI5NzA3/ODEzNl9KM2tIM1Zv/QXk0UWNWdUdiRjBI/UVAyQmFOQ3BhRjdn/UC5qcGc" alt="Coding illustration"
-                     class="w-full max-w-md mx-auto animate-float">
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" alt="Komunitas Coding"
+                     class="w-full max-w-md mx-auto animate-float rounded-lg shadow-lg">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fitur Section -->
+<div class="bg-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="mx-auto mb-3 text-indigo-600 text-4xl"><i class="fas fa-code"></i></div>
+                <h3 class="font-semibold text-lg mb-1">Coding Challenge</h3>
+                <p class="text-gray-500 text-sm">Latihan soal dan tantangan coding real-time, langsung uji kode kamu.</p>
+            </div>
+            <div>
+                <div class="mx-auto mb-3 text-yellow-500 text-4xl"><i class="fas fa-book-open"></i></div>
+                <h3 class="font-semibold text-lg mb-1">Materi Interaktif</h3>
+                <p class="text-gray-500 text-sm">Materi belajar terstruktur, cocok untuk pemula hingga mahir.</p>
+            </div>
+            <div>
+                <div class="mx-auto mb-3 text-pink-500 text-4xl"><i class="fas fa-comments"></i></div>
+                <h3 class="font-semibold text-lg mb-1">Forum Diskusi</h3>
+                <p class="text-gray-500 text-sm">Tanya jawab, diskusi, dan sharing bareng komunitas aktif.</p>
+            </div>
+            <div>
+                <div class="mx-auto mb-3 text-green-600 text-4xl"><i class="fas fa-trophy"></i></div>
+                <h3 class="font-semibold text-lg mb-1">Leaderboard & Badge</h3>
+                <p class="text-gray-500 text-sm">Naik level, kumpulkan badge, dan puncaki leaderboard mingguan!</p>
             </div>
         </div>
     </div>

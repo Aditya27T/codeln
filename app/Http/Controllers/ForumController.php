@@ -49,11 +49,48 @@ class ForumController extends Controller
 
     public function like(Request $request)
     {
-        $like = Like::firstOrCreate([
-            'user_id' => auth()->id(),
-            'post_id' => $request->post_id,
+        $user = auth()->user();
+        $post = \App\Models\Post::findOrFail($request->post_id);
+        $existing = $post->likes()->where('user_id', $user->id)->first();
+        $liked = false;
+        if ($existing) {
+            $existing->delete();
+            $liked = false;
+        } else {
+            $post->likes()->create(['user_id' => $user->id]);
+            $liked = true;
+        }
+        $likeCount = $post->likes()->count();
+        return response()->json([
+            'success' => true,
+            'liked' => $liked,
+            'count' => $likeCount
         ]);
+    }
 
-        return response()->json(['success' => true]);
+    public function threadJson($id)
+    {
+        $post = Post::with(['user', 'replies.user', 'likes'])->find($id);
+        if (!$post) {
+            return response()->json(['success' => false]);
+        }
+        return response()->json([
+            'success' => true,
+            'thread' => [
+                'id' => $post->id,
+                'title' => $post->title,
+                'content' => $post->content,
+                'user_name' => $post->user->name ?? '-',
+                'created_at_human' => $post->created_at->diffForHumans(),
+                'likes_count' => $post->likes->count(),
+                'replies' => $post->replies->map(function($r) {
+                    return [
+                        'user_name' => $r->user->name ?? '-',
+                        'content' => $r->content,
+                        'created_at_human' => $r->created_at->diffForHumans(),
+                    ];
+                }),
+            ]
+        ]);
     }
 }

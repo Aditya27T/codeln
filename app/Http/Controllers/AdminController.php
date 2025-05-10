@@ -35,4 +35,32 @@ class AdminController extends Controller
         $users = User::all();
         return view('admin.users.index', compact('users'));
     }
+
+    public function usersEdit($id)
+    {
+        $user = User::findOrFail($id);
+        return view('admin.users.edit', compact('user'));
+    }
+
+    public function usersUpdate(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'role' => 'required|in:admin,student',
+        ]);
+        $user->update($validated);
+        return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
+    }
+
+    public function usersDestroy($id)
+    {
+        $user = User::findOrFail($id);
+        if ($user->id === auth()->id()) {
+            return redirect()->route('admin.users.index')->with('error', 'You cannot delete yourself.');
+        }
+        $user->delete();
+        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
+    }
 }

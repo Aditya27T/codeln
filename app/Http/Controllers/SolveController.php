@@ -19,7 +19,10 @@ class SolveController extends Controller
             
         $initialCode = $userProgress ? $userProgress->submitted_code : $question->code_template;
         
-        return view('solve.show', compact('question', 'initialCode', 'userProgress'));
+        // Render markdown description to HTML
+        $converter = new \League\CommonMark\GithubFlavoredMarkdownConverter();
+        $descriptionHtml = $converter->convert($question->description);
+        return view('solve.show', compact('question', 'initialCode', 'userProgress', 'descriptionHtml'));
     }
 
     public function submit(Request $request, Question $question)

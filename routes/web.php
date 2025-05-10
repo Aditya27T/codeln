@@ -10,16 +10,21 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ForumController;
 
 Route::get('/', function () {
+    if (auth()->check()) {
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } else {
+            return redirect()->route('dashboard');
+        }
+    }
     return view('welcome');
 });
 
 // Auth routes (enabled by Breeze)
 // ...
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'role:student'])->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\ProfileController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
     // Material routes
     Route::get('/materials', [MaterialController::class, 'index'])->name('materials.index');
@@ -33,6 +38,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/solve/{question}', [SolveController::class, 'show'])->name('solve.show');
     Route::post('/solve/{question}', [SolveController::class, 'submit'])->name('solve.submit');
 
+    // Run code via Piston API
+    Route::post('/run-code', [\App\Http\Controllers\RunCodeController::class, 'execute'])->name('run.code');
+
+    // Analyze code with Gemini AI
+    Route::post('/analyze-code', [\App\Http\Controllers\AnalyzeCodeController::class, 'analyze'])->name('analyze.code');
+
     // Leaderboard route
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
 
@@ -45,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/forum/post', [ForumController::class, 'storePost'])->name('forum.post');
     Route::post('/forum/reply', [ForumController::class, 'storeReply'])->name('forum.reply');
     Route::post('/forum/like', [ForumController::class, 'like'])->name('forum.like');
+Route::get('/forum/thread/{id}', [ForumController::class, 'threadJson'])->name('forum.thread.json');
 });
 
 // Admin routes with middleware

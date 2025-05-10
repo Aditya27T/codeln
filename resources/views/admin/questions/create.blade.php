@@ -34,10 +34,14 @@
                         
                         <div class="mb-4">
                             <label for="description" class="block text-sm font-medium text-gray-700">Description (Markdown supported)</label>
-                            <textarea name="description" id="description" rows="10" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>{{ old('description') }}</textarea>
+                            <textarea name="description" id="description" rows="8" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required placeholder="Describe the problem, input/output format, etc.">{{ old('description') }}</textarea>
                             @error('description')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
+                            <div class="mt-2">
+                                <label class="block text-xs text-gray-500 mb-1">Live Preview:</label>
+                                <div id="desc-preview" class="prose prose-sm bg-gray-50 rounded p-3 border"></div>
+                            </div>
                         </div>
                         
                         <div class="mb-4">

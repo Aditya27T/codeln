@@ -57,13 +57,9 @@
                         <!-- Like and Reply Buttons -->
                         <div class="flex justify-between items-center text-sm text-gray-500">
                             <div class="flex space-x-4">
-                                <form method="POST" action="{{ route('forum.like') }}" class="inline">
-                                    @csrf
-                                    <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                    <button type="submit" class="flex items-center text-gray-600 hover:text-indigo-600">
-                                        ❤️ {{ $post->likes->count() }} Likes
-                                    </button>
-                                </form>
+                                <button type="button" class="flex items-center like-btn text-gray-600 hover:text-indigo-600 {{ $post->likes->where('user_id', auth()->id())->count() ? 'text-red-500 font-bold' : '' }}" data-post-id="{{ $post->id }}">
+                                    <span class="like-icon">❤️</span> <span class="like-count">{{ $post->likes->count() }}</span> Likes
+                                </button>
                                 <button type="button" class="flex items-center text-gray-600 hover:text-indigo-600" onclick="toggleReplies({{ $post->id }})">
                                     💬 {{ $post->replies->count() }} Balasan
                                 </button>
@@ -119,5 +115,37 @@
             const section = document.getElementById('replies-' + id);
             section.classList.toggle('hidden');
         }
+
+        // Like button AJAX
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const postId = this.getAttribute('data-post-id');
+                const icon = this.querySelector('.like-icon');
+                const countSpan = this.querySelector('.like-count');
+                try {
+                    const resp = await fetch("{{ route('forum.like') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                        },
+                        body: JSON.stringify({ post_id: postId })
+                    });
+                    const data = await resp.json();
+                    if (data.success) {
+                        countSpan.textContent = data.count;
+                        if (data.liked) {
+                            this.classList.add('text-red-500', 'font-bold');
+                        } else {
+                            this.classList.remove('text-red-500', 'font-bold');
+                        }
+                    } else {
+                        alert('Gagal update like');
+                    }
+                } catch (e) {
+                    alert('Gagal koneksi ke server');
+                }
+            });
+        });
     </script>
 </x-app-layout>

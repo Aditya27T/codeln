@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-xl shadow-sm p-8">
                 <div class="prose max-w-none text-gray-900">
-                    {!! $material->content !!}
+                    {!! $contentHtml !!}
                 </div>
 
                 <div class="mt-10 flex flex-col sm:flex-row justify-between gap-4">

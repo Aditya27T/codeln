@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.admin')
+
+@section('content')
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -20,7 +22,8 @@
                         </div>
                     @endif
                     
-                    <div class="overflow-x-auto">
+                    <a href="{{ route('admin.materials.create') }}" class="mb-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Add New Material</a>
+    <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
@@ -69,4 +72,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection
