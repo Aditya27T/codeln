@@ -37,13 +37,14 @@ Route::middleware(['auth', 'role:student'])->group(function () {
     // Solve routes
     Route::get('/solve/{question}', [SolveController::class, 'show'])->name('solve.show');
     Route::post('/solve/{question}', [SolveController::class, 'submit'])->name('solve.submit');
+    Route::get('/api/question/{question}/template/{language}', [App\Http\Controllers\TemplateController::class, 'getTemplate']);
+
 
     // Run code via Piston API
     Route::post('/run-code', [\App\Http\Controllers\RunCodeController::class, 'execute'])->name('run.code');
 
     // Analyze code with Gemini AI
-    Route::post('/analyze-code', [\App\Http\Controllers\AnalyzeCodeController::class, 'analyze'])->name('analyze.code');
-
+    Route::post('/analyze-code', [App\Http\Controllers\AnalyzeCodeController::class, 'analyze'])->name('analyze.code');
     // Leaderboard route
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
 

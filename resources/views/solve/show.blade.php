@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <!-- Tambahkan SweetAlert2 dari CDN -->
+    <!-- Include SweetAlert2 from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <div class="py-12">
@@ -43,19 +43,19 @@
                         <h3 class="text-lg font-medium mb-4">Your Solution</h3>
                         
                         <div class="mb-2 flex items-center gap-2">
-                            <label for="run-language" class="text-sm">Language:</label>
-                            <select id="run-language" class="border rounded p-1 text-sm">
-                                <option value="php" selected>PHP</option>
-                                <option value="python3">Python</option>
-                                <option value="javascript">JavaScript</option>
-                                <option value="java">Java</option>
-                                <option value="c">C</option>
-                                <option value="cpp">C++</option>
-                                <option value="go">Go</option>
-                                <option value="ruby">Ruby</option>
-                                <option value="rust">Rust</option>
-                                <option value="csharp">C#</option>
-                                <option value="typescript">TypeScript</option>
+                            <label for="language" class="text-sm">Language:</label>
+                            <select id="language" name="language" class="border rounded p-1 text-sm">
+                                <option value="php" {{ ($userProgress && $userProgress->language === 'php') || (!$userProgress && $question->default_language === 'php') ? 'selected' : '' }}>PHP</option>
+                                <option value="python3" {{ ($userProgress && $userProgress->language === 'python3') || (!$userProgress && $question->default_language === 'python3') ? 'selected' : '' }}>Python</option>
+                                <option value="javascript" {{ ($userProgress && $userProgress->language === 'javascript') || (!$userProgress && $question->default_language === 'javascript') ? 'selected' : '' }}>JavaScript</option>
+                                <option value="java" {{ ($userProgress && $userProgress->language === 'java') || (!$userProgress && $question->default_language === 'java') ? 'selected' : '' }}>Java</option>
+                                <option value="c" {{ ($userProgress && $userProgress->language === 'c') || (!$userProgress && $question->default_language === 'c') ? 'selected' : '' }}>C</option>
+                                <option value="cpp" {{ ($userProgress && $userProgress->language === 'cpp') || (!$userProgress && $question->default_language === 'cpp') ? 'selected' : '' }}>C++</option>
+                                <option value="go" {{ ($userProgress && $userProgress->language === 'go') || (!$userProgress && $question->default_language === 'go') ? 'selected' : '' }}>Go</option>
+                                <option value="ruby" {{ ($userProgress && $userProgress->language === 'ruby') || (!$userProgress && $question->default_language === 'ruby') ? 'selected' : '' }}>Ruby</option>
+                                <option value="rust" {{ ($userProgress && $userProgress->language === 'rust') || (!$userProgress && $question->default_language === 'rust') ? 'selected' : '' }}>Rust</option>
+                                <option value="csharp" {{ ($userProgress && $userProgress->language === 'csharp') || (!$userProgress && $question->default_language === 'csharp') ? 'selected' : '' }}>C#</option>
+                                <option value="typescript" {{ ($userProgress && $userProgress->language === 'typescript') || (!$userProgress && $question->default_language === 'typescript') ? 'selected' : '' }}>TypeScript</option>
                             </select>
                             <button type="button" id="template-btn" class="ml-2 bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded text-xs flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -112,7 +112,7 @@
     </div>
 
     <script>
-        // Definisikan template untuk setiap bahasa
+        // Define templates for each language
         const templates = {
             'cpp': `#include <iostream>
 #include <vector>
@@ -215,32 +215,32 @@ function greet(name: string): string {
 console.log(greet("Programmer"));`
         };
 
-        // Fungsi untuk memuat template dengan SweetAlert
+        // Function to load template with SweetAlert
         document.getElementById('template-btn').addEventListener('click', function() {
-            const language = document.getElementById('run-language').value;
+            const language = document.getElementById('language').value;
             const editor = document.getElementById('code-editor');
             
-            // Periksa apakah editor sudah memiliki kode
+            // Check if editor already has code
             if (editor.value.trim() !== '') {
-                // Gunakan SweetAlert untuk konfirmasi
+                // Use SweetAlert for confirmation
                 Swal.fire({
-                    title: 'Terapkan Template?',
-                    text: 'Kode yang ada akan diganti dengan template baru.',
+                    title: 'Apply Template?',
+                    text: 'Existing code will be replaced with the new template.',
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Terapkan!',
-                    cancelButtonText: 'Batal'
+                    confirmButtonText: 'Yes, Apply!',
+                    cancelButtonText: 'Cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Terapkan template
+                        // Apply template
                         applyTemplate(language, editor);
                         
-                        // Tampilkan notifikasi sukses
+                        // Show success notification
                         Swal.fire({
-                            title: 'Template Diterapkan!',
-                            text: 'Kode template telah diterapkan.',
+                            title: 'Template Applied!',
+                            text: 'Template code has been applied.',
                             icon: 'success',
                             timer: 1500,
                             showConfirmButton: false
@@ -248,13 +248,13 @@ console.log(greet("Programmer"));`
                     }
                 });
             } else {
-                // Jika editor kosong, langsung terapkan template
+                // If editor is empty, apply template directly
                 applyTemplate(language, editor);
                 
-                // Tampilkan notifikasi sukses
+                // Show success notification
                 Swal.fire({
-                    title: 'Template Diterapkan!',
-                    text: 'Kode template telah diterapkan.',
+                    title: 'Template Applied!',
+                    text: 'Template code has been applied.',
                     icon: 'success',
                     timer: 1500,
                     showConfirmButton: false
@@ -262,44 +262,60 @@ console.log(greet("Programmer"));`
             }
         });
         
-        // Fungsi untuk menerapkan template
+        // Function to apply template
         function applyTemplate(language, editor) {
-            if (templates[language]) {
-                editor.value = templates[language];
-            } else {
-                editor.value = "// Tulis kode Anda di sini";
-            }
+            // Try to get the template from the server first
+            fetch(`/api/question/{{ $question->id }}/template/${language}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.template) {
+                        editor.value = data.template;
+                    } else if (templates[language]) {
+                        // Fall back to client-side templates
+                        editor.value = templates[language];
+                    } else {
+                        editor.value = "// Write your code here";
+                    }
+                })
+                .catch(error => {
+                    // If error, use client-side templates
+                    if (templates[language]) {
+                        editor.value = templates[language];
+                    } else {
+                        editor.value = "// Write your code here";
+                    }
+                });
         }
 
-        // Run Code dengan SweetAlert untuk loading
+        // Run Code with SweetAlert for loading
         document.getElementById('run-btn').addEventListener('click', async function() {
             const code = document.getElementById('code-editor').value;
-            const language = document.getElementById('run-language').value;
+            const language = document.getElementById('language').value;
             const stdin = document.getElementById('run-stdin').value;
             
-            // Periksa apakah kode kosong
+            // Check if code is empty
             if (!code.trim()) {
                 Swal.fire({
-                    title: 'Kode Kosong',
-                    text: 'Silakan tulis kode terlebih dahulu.',
+                    title: 'Empty Code',
+                    text: 'Please write some code first.',
                     icon: 'warning'
                 });
                 return;
             }
             
-            // Tampilkan loading
+            // Show loading
             Swal.fire({
-                title: 'Menjalankan Kode...',
-                text: 'Harap tunggu...',
+                title: 'Running Code...',
+                text: 'Please wait...',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
                 }
             });
             
-            // Tampilkan output panel
+            // Show output panel
             document.getElementById('run-output-card').classList.remove('hidden');
-            document.getElementById('run-output-stdout').textContent = 'Menjalankan...';
+            document.getElementById('run-output-stdout').textContent = 'Running...';
             document.getElementById('run-output-stderr').textContent = '-';
             document.getElementById('run-output-exit').textContent = '-';
             
@@ -319,18 +335,18 @@ console.log(greet("Programmer"));`
                 
                 const data = await response.json();
                 
-                // Tutup loading
+                // Close loading
                 Swal.close();
                 
-                // Tampilkan hasil
+                // Show results
                 document.getElementById('run-output-stdout').textContent = data.stdout || data.output || '-';
                 document.getElementById('run-output-stderr').textContent = data.stderr || data.error || '-';
                 document.getElementById('run-output-exit').textContent = data.code !== undefined ? data.code : (data.exitCode !== undefined ? data.exitCode : '-');
                 
-                // Scroll ke hasil
+                // Scroll to results
                 document.getElementById('run-output-card').scrollIntoView({ behavior: 'smooth' });
             } catch (e) {
-                // Tutup loading dan tampilkan error
+                // Close loading and show error
                 Swal.close();
                 
                 document.getElementById('run-output-stdout').textContent = '-';
@@ -339,131 +355,141 @@ console.log(greet("Programmer"));`
                 
                 Swal.fire({
                     title: 'Error',
-                    text: 'Gagal menjalankan kode: ' + e.message,
+                    text: 'Failed to run code: ' + e.message,
                     icon: 'error'
                 });
             }
         });
 
-        // AI Suggestion dengan SweetAlert
-        document.getElementById('ai-btn').addEventListener('click', async function() {
-            const code = document.getElementById('code-editor').value;
-            const language = document.getElementById('run-language').value;
-            const aiDiv = document.getElementById('ai-feedback');
+        // AI Suggestion with SweetAlert
+document.getElementById('ai-btn').addEventListener('click', async function() {
+    const code = document.getElementById('code-editor').value;
+    const language = document.getElementById('language').value;
+    const aiDiv = document.getElementById('ai-feedback');
+    
+    // Check if code is empty
+    if (!code.trim()) {
+        Swal.fire({
+            title: 'Kode Kosong',
+            text: 'Silakan tulis kode terlebih dahulu untuk mendapatkan saran AI.',
+            icon: 'warning'
+        });
+        return;
+    }
+    
+    // Show loading
+    Swal.fire({
+        title: 'Meminta Saran AI...',
+        text: 'Harap tunggu...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    
+    aiDiv.classList.remove('hidden');
+    aiDiv.textContent = 'Meminta saran AI...';
+    try {
+        const resp = await fetch("{{ route('analyze.code') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                code,
+                language,
+                question_id: {{ $question->id }}, // Pass the question ID
+            })
+        });
+        
+        const data = await resp.json();
+        
+        // Close loading
+        Swal.close();
+        
+        if (data.feedback) {
+            // Format the feedback with Markdown
+            const formattedFeedback = data.feedback
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
+                .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic
+                .replace(/```([\s\S]*?)```/g, '<pre class="bg-gray-800 text-white p-2 rounded my-2 overflow-x-auto">$1</pre>') // Code blocks
+                .replace(/`(.*?)`/g, '<code class="bg-gray-100 px-1 rounded">$1</code>') // Inline code
+                .replace(/\n/g, '<br>'); // Line breaks
             
-            // Periksa apakah kode kosong
-            if (!code.trim()) {
-                Swal.fire({
-                    title: 'Kode Kosong',
-                    text: 'Silakan tulis kode terlebih dahulu untuk mendapatkan saran AI.',
-                    icon: 'warning'
-                });
-                return;
-            }
+            aiDiv.innerHTML = formattedFeedback;
             
-            // Tampilkan loading
+            // Scroll to feedback
+            aiDiv.scrollIntoView({ behavior: 'smooth' });
+        } else if (data.error) {
+            aiDiv.innerHTML = '<span class="text-red-500">Error:</span> ' + data.error;
+            
             Swal.fire({
-                title: 'Meminta Saran AI...',
-                text: 'Harap tunggu...',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
+                title: 'Error',
+                text: data.error,
+                icon: 'error'
             });
+        } else {
+            aiDiv.innerHTML = '<span class="text-red-500">Error:</span> Respons AI tidak valid';
             
-            aiDiv.classList.remove('hidden');
-            aiDiv.textContent = 'Meminta saran AI...';
-            try {
-                const resp = await fetch("{{ route('analyze.code') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    },
-                    body: JSON.stringify({
-                        code,
-                        language,
-                        question: @json($question->description),
-                        reference: @json($question->solution ?? null)
-                    })
-                });
-                
-                const data = await resp.json();
-                
-                // Tutup loading
-                Swal.close();
-                
-                if (data.feedback) {
-                    aiDiv.textContent = data.feedback;
-                    // Scroll ke feedback
-                    aiDiv.scrollIntoView({ behavior: 'smooth' });
-                } else if (data.error) {
-                    aiDiv.textContent = 'Error: ' + data.error;
-                    Swal.fire({
-                        title: 'Error',
-                        text: data.error,
-                        icon: 'error'
-                    });
-                } else {
-                    aiDiv.textContent = JSON.stringify(data);
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Respons AI tidak valid',
-                        icon: 'error'
-                    });
-                }
-            } catch (e) {
-                // Tutup loading dan tampilkan error
-                Swal.close();
-                
-                aiDiv.textContent = 'Request failed: ' + e.message;
-                
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Gagal mendapatkan saran AI: ' + e.message,
-                    icon: 'error'
-                });
-            }
+            Swal.fire({
+                title: 'Error',
+                text: 'Respons AI tidak valid',
+                icon: 'error'
+            });
+        }
+    } catch (e) {
+        // Close loading and show error
+        Swal.close();
+        
+        aiDiv.innerHTML = '<span class="text-red-500">Error:</span> ' + e.message;
+        
+        Swal.fire({
+            title: 'Error',
+            text: 'Gagal mendapatkan saran AI: ' + e.message,
+            icon: 'error'
         });
+    }
+});
 
-        // Form submission dengan validasi
+        // Form submission with validation
         document.getElementById('code-form').addEventListener('submit', function(e) {
             const codeEditor = document.getElementById('code-editor');
             if (!codeEditor.value.trim()) {
                 e.preventDefault();
                 Swal.fire({
-                    title: 'Kode Kosong',
-                    text: 'Silakan tulis kode terlebih dahulu sebelum mengirimkan.',
+                    title: 'Empty Code',
+                    text: 'Please write some code first before submitting.',
                     icon: 'warning'
                 });
             }
         });
         
-        // Handle language change dengan SweetAlert
-        document.getElementById('run-language').addEventListener('change', function() {
+        // Handle language change with SweetAlert
+        document.getElementById('language').addEventListener('change', function() {
             const language = this.value;
             const editor = document.getElementById('code-editor');
             
-            // Jika editor tidak kosong, tanyakan konfirmasi
+            // If editor is not empty, ask for confirmation
             if (editor.value.trim() !== '') {
                 Swal.fire({
-                    title: 'Ganti Bahasa',
-                    text: `Apakah Anda ingin menerapkan template untuk bahasa ${language}?`,
+                    title: 'Change Language',
+                    text: `Do you want to apply the ${language} template?`,
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Terapkan Template!',
-                    cancelButtonText: 'Tidak, Biarkan Kode Saya'
+                    confirmButtonText: 'Yes, Apply Template!',
+                    cancelButtonText: 'No, Keep My Code'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Terapkan template
+                        // Apply template
                         applyTemplate(language, editor);
                         
-                        // Tampilkan notifikasi sukses
+                        // Show success notification
                         Swal.fire({
-                            title: 'Template Diterapkan!',
-                            text: `Template bahasa ${language} telah diterapkan.`,
+                            title: 'Template Applied!',
+                            text: `${language} template has been applied.`,
                             icon: 'success',
                             timer: 1500,
                             showConfirmButton: false
@@ -471,40 +497,40 @@ console.log(greet("Programmer"));`
                     }
                 });
             } else {
-                // Jika editor kosong, langsung terapkan template
+                // If editor is empty, apply template directly
                 applyTemplate(language, editor);
             }
         });
         
-        // Auto-save dan load kode
+        // Auto-save and load code
         const storageKey = 'code_{{ $question->id }}_';
         
-        // Simpan kode saat mengetik
+        // Save code when typing
         let saveTimeout;
         document.getElementById('code-editor').addEventListener('input', function() {
             clearTimeout(saveTimeout);
             saveTimeout = setTimeout(() => {
-                const language = document.getElementById('run-language').value;
+                const language = document.getElementById('language').value;
                 localStorage.setItem(storageKey + language, this.value);
             }, 500);
         });
         
-        // Muat kode tersimpan saat halaman dimuat
+        // Load saved code when page loads
         document.addEventListener('DOMContentLoaded', function() {
             const editor = document.getElementById('code-editor');
-            const language = document.getElementById('run-language').value;
+            const language = document.getElementById('language').value;
             
-            // Jika ada kode awal, gunakan itu
+            // If there's initial code, use that
             if (editor.value.trim()) {
                 return;
             }
             
-            // Coba muat dari localStorage
+            // Try to load from localStorage
             const savedCode = localStorage.getItem(storageKey + language);
             if (savedCode) {
                 editor.value = savedCode;
             } else {
-                // Jika tidak ada kode tersimpan, terapkan template
+                // If no saved code, apply template
                 applyTemplate(language, editor);
             }
         });

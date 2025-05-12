@@ -17,6 +17,7 @@ class UserProgress extends Model
         'score',
         'submitted_code',
         'completed_at',
+        'language', // Add language field
     ];
 
     protected $casts = [
