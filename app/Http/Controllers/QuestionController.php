@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Question;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreQuestionRequest;
+use App\Http\Requests\UpdateQuestionRequest;
+use App\Services\QuestionService;
 
 class QuestionController extends Controller
 {
@@ -24,21 +27,16 @@ class QuestionController extends Controller
         return view('admin.questions.create');
     }
 
-    public function store(Request $request)
+    protected $questionService;
+
+    public function __construct(QuestionService $questionService)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'difficulty' => 'required|in:easy,medium,hard',
-            'code_template' => 'nullable',
-            'test_cases' => 'required|json',
-            'solution' => 'required',
-        ]);
+        $this->questionService = $questionService;
+    }
 
-        $validated['test_cases'] = json_decode($validated['test_cases'], true);
-        
-        Question::create($validated);
-
+    public function store(StoreQuestionRequest $request)
+    {
+        $this->questionService->create($request->validated());
         return redirect()->route('admin.questions.index')->with('success', 'Question created successfully');
     }
 
@@ -47,21 +45,9 @@ class QuestionController extends Controller
         return view('admin.questions.edit', compact('question'));
     }
 
-    public function update(Request $request, Question $question)
+    public function update(UpdateQuestionRequest $request, Question $question)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'difficulty' => 'required|in:easy,medium,hard',
-            'code_template' => 'nullable',
-            'test_cases' => 'required|json',
-            'solution' => 'required',
-        ]);
-
-        $validated['test_cases'] = json_decode($validated['test_cases'], true);
-        
-        $question->update($validated);
-
+        $this->questionService->update($question, $request->validated());
         return redirect()->route('admin.questions.index')->with('success', 'Question updated successfully');
     }
 

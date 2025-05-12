@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Material;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreMaterialRequest;
+use App\Http\Requests\UpdateMaterialRequest;
+use App\Services\MaterialService;
 
 class MaterialController extends Controller
 {
@@ -34,16 +37,16 @@ class MaterialController extends Controller
         return view('admin.materials.create');
     }
 
-    public function store(Request $request)
+    protected $materialService;
+
+    public function __construct(MaterialService $materialService)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-            'order' => 'required|integer',
-        ]);
+        $this->materialService = $materialService;
+    }
 
-        Material::create($validated);
-
+    public function store(StoreMaterialRequest $request)
+    {
+        $this->materialService->create($request->validated());
         return redirect()->route('admin.materials.index')->with('success', 'Material created successfully');
     }
 
@@ -52,23 +55,15 @@ class MaterialController extends Controller
         return view('admin.materials.edit', compact('material'));
     }
 
-    public function update(Request $request, Material $material)
+    public function update(UpdateMaterialRequest $request, Material $material)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-            'order' => 'required|integer',
-        ]);
-
-        $material->update($validated);
-
+        $this->materialService->update($material, $request->validated());
         return redirect()->route('admin.materials.index')->with('success', 'Material updated successfully');
     }
 
     public function destroy(Material $material)
     {
-        $material->delete();
-
+        $this->materialService->delete($material);
         return redirect()->route('admin.materials.index')->with('success', 'Material deleted successfully');
     }
 }
