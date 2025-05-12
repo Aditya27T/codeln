@@ -17,4 +17,8 @@ class LikeRepository
     {
         $like->delete();
     }
+    public function countByPost($postId)
+    {
+        return Like::where('post_id', $postId)->count();
+    }
 }

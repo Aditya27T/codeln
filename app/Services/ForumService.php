@@ -45,4 +45,9 @@ class ForumService
             return true;
         }
     }
+
+    public function getLikeCount($postId)
+    {
+        return $this->likeRepository->countByPost($postId);
+    }
 }

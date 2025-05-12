@@ -40,11 +40,13 @@ class ForumController extends Controller
         $request->validate([
             'post_id' => 'required|exists:posts,id',
             'content' => 'required',
+            'parent_id' => 'nullable|exists:replies,id',
         ]);
         $this->forumService->createReply([
             'user_id' => auth()->id(),
             'post_id' => $request->post_id,
             'content' => $request->content,
+            'parent_id' => $request->parent_id ?? null,
         ]);
         return back();
     }

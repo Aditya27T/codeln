@@ -74,7 +74,8 @@
                             <form method="POST" action="{{ route('forum.reply') }}">
                                 @csrf
                                 <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                <textarea name="content" rows="2" class="w-full border-gray-300 rounded-md mt-3" placeholder="Tulis balasan..." required></textarea>
+                                <input type="hidden" name="parent_id" value="">
+<textarea name="content" rows="2" class="w-full border-gray-300 rounded-md mt-3" placeholder="Tulis balasan..." required></textarea>
                                 <div class="flex justify-end space-x-3 mt-2">
                                     <button type="button" class="px-3 py-1 border rounded-lg text-gray-700 hover:bg-gray-100 text-sm" onclick="toggleReplyForm({{ $post->id }})">Cancel</button>
                                     <button type="submit" class="bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-900 text-sm">Balas</button>
@@ -84,20 +85,39 @@
 
                         <!-- Replies Section -->
                         <div class="replies mt-4 space-y-3 hidden" id="replies-{{ $post->id }}">
-                            @foreach ($post->replies as $reply)
-                                <div class="border-t pt-3 mt-3 text-sm text-gray-600">
-                                    <div class="flex justify-between items-start">
-                                        <div class="flex items-center">
-                                            <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-2">
-                                                <i class="fas fa-user text-indigo-500"></i>
-                                            </div>
-                                            <strong>{{ $reply->user->name }}</strong>
-                                        </div>
-                                        <span class="text-xs text-gray-400">{{ $reply->created_at->diffForHumans() }}</span>
-                                    </div>
-                                    <div class="mt-2">{{ $reply->content }}</div>
-                                </div>
-                            @endforeach
+                            @foreach ($post->replies->where('parent_id', null) as $reply)
+    <div class="border-t pt-3 mt-3 text-sm text-gray-600">
+        <div class="flex justify-between items-start">
+            <div class="flex items-center">
+                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-2">
+                    <i class="fas fa-user text-indigo-500"></i>
+                </div>
+                <strong>{{ $reply->user->name }}</strong>
+            </div>
+            <span class="text-xs text-gray-400">{{ $reply->created_at->diffForHumans() }}</span>
+        </div>
+        <div class="mt-2">{{ $reply->content }}</div>
+        <!-- Nested reply form -->
+        <div class="reply-form mt-2" id="reply-form-{{ $reply->id }}" style="display: none;">
+            <form method="POST" action="{{ route('forum.reply') }}">
+                @csrf
+                <input type="hidden" name="post_id" value="{{ $post->id }}">
+                <input type="hidden" name="parent_id" value="{{ $reply->id }}">
+                <textarea name="content" rows="2" class="w-full border-gray-300 rounded-md mt-1" placeholder="Tulis balasan..." required></textarea>
+                <div class="flex justify-end space-x-3 mt-1">
+                    <button type="button" class="px-2 py-1 border rounded-lg text-gray-700 hover:bg-gray-100 text-xs" onclick="toggleReplyForm({{ $reply->id }})">Cancel</button>
+                    <button type="submit" class="bg-gray-800 text-white px-2 py-1 rounded hover:bg-gray-900 text-xs">Balas</button>
+                </div>
+            </form>
+        </div>
+        <button class="text-indigo-600 hover:text-indigo-800 text-xs font-medium mt-1" onclick="toggleReplyForm({{ $reply->id }})">
+            <i class="fas fa-reply mr-1"></i> Balas
+        </button>
+        @if ($reply->children->count())
+            @include('forum.reply_children', ['replies' => $reply->children])
+        @endif
+    </div>
+@endforeach
                         </div>
                     </div>
                 </div>
@@ -105,47 +125,80 @@
         </div>
     </div>
 
-    <script>
-        function toggleReplyForm(id) {
-            const form = document.getElementById('reply-form-' + id);
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        }
+    <!-- SweetAlert CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function toggleReplyForm(id) {
+        const form = document.getElementById('reply-form-' + id);
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
 
-        function toggleReplies(id) {
-            const section = document.getElementById('replies-' + id);
-            section.classList.toggle('hidden');
-        }
+    function toggleReplies(id) {
+        const section = document.getElementById('replies-' + id);
+        section.classList.toggle('hidden');
+    }
 
-        // Like button AJAX
-        document.querySelectorAll('.like-btn').forEach(btn => {
-            btn.addEventListener('click', async function() {
-                const postId = this.getAttribute('data-post-id');
-                const icon = this.querySelector('.like-icon');
-                const countSpan = this.querySelector('.like-count');
-                try {
-                    const resp = await fetch("{{ route('forum.like') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
-                        },
-                        body: JSON.stringify({ post_id: postId })
-                    });
-                    const data = await resp.json();
-                    if (data.success) {
-                        countSpan.textContent = data.count;
-                        if (data.liked) {
-                            this.classList.add('text-red-500', 'font-bold');
-                        } else {
-                            this.classList.remove('text-red-500', 'font-bold');
-                        }
+    // Like button AJAX
+    document.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const postId = this.getAttribute('data-post-id');
+            const icon = this.querySelector('.like-icon');
+            const countSpan = this.querySelector('.like-count');
+            try {
+                // Efek animasi saat klik
+                icon.classList.add('animate-bounce');
+                setTimeout(() => icon.classList.remove('animate-bounce'), 400);
+
+                const resp = await fetch("{{ route('forum.like') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                    },
+                    body: JSON.stringify({ post_id: postId })
+                });
+                const data = await resp.json();
+                if (data.success) {
+                    countSpan.textContent = data.count;
+                    if (data.liked) {
+                        this.classList.add('text-red-500', 'font-bold');
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Post disukai!',
+                            showConfirmButton: false,
+                            timer: 1200
+                        });
                     } else {
-                        alert('Gagal update like');
+                        this.classList.remove('text-red-500', 'font-bold');
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'info',
+                            title: 'Like dihapus.',
+                            showConfirmButton: false,
+                            timer: 1200
+                        });
                     }
-                } catch (e) {
-                    alert('Gagal koneksi ke server');
+                } else {
+                    Swal.fire('Gagal', 'Gagal update like', 'error');
                 }
-            });
+            } catch (e) {
+                Swal.fire('Gagal', 'Gagal koneksi ke server', 'error');
+            }
         });
-    </script>
+    });
+</script>
+<style>
+    .animate-bounce {
+        animation: bounce 0.4s;
+    }
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-8px); }
+        60% { transform: translateY(4px); }
+    }
+</style>
+
 </x-app-layout>
