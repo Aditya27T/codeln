@@ -5,13 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Reply;
 use App\Models\Like;
+use App\Services\ForumService;
 use Illuminate\Http\Request;
 
 class ForumController extends Controller
 {
+    protected $forumService;
+    public function __construct(ForumService $forumService)
+    {
+        $this->forumService = $forumService;
+    }
     public function index()
     {
-        $posts = Post::with(['user', 'replies.user', 'likes'])->latest()->get();
+        $posts = $this->forumService->getAllPosts();
         return view('forum.index', compact('posts'));
     }
 
@@ -21,13 +27,11 @@ class ForumController extends Controller
             'title' => 'required',
             'content' => 'required',
         ]);
-
-        Post::create([
+        $this->forumService->createPost([
             'user_id' => auth()->id(),
             'title' => $request->title,
             'content' => $request->content,
         ]);
-
         return back();
     }
 
@@ -37,30 +41,22 @@ class ForumController extends Controller
             'post_id' => 'required|exists:posts,id',
             'content' => 'required',
         ]);
-
-        Reply::create([
+        $this->forumService->createReply([
             'user_id' => auth()->id(),
             'post_id' => $request->post_id,
             'content' => $request->content,
         ]);
-
         return back();
     }
 
     public function like(Request $request)
     {
+        $request->validate([
+            'post_id' => 'required|exists:posts,id',
+        ]);
         $user = auth()->user();
-        $post = \App\Models\Post::findOrFail($request->post_id);
-        $existing = $post->likes()->where('user_id', $user->id)->first();
-        $liked = false;
-        if ($existing) {
-            $existing->delete();
-            $liked = false;
-        } else {
-            $post->likes()->create(['user_id' => $user->id]);
-            $liked = true;
-        }
-        $likeCount = $post->likes()->count();
+        $liked = $this->forumService->toggleLike($user->id, $request->post_id);
+        $likeCount = $this->forumService->getLikeCount($request->post_id);
         return response()->json([
             'success' => true,
             'liked' => $liked,

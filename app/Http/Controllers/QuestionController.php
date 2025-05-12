@@ -12,12 +12,13 @@ class QuestionController extends Controller
 {
     public function index()
     {
-        $questions = Question::all();
+        $questions = $this->questionService->all();
         return view('questions.index', compact('questions'));
     }
 
-    public function show(Question $question)
+    public function show($id)
     {
+        $question = $this->questionService->find($id);
         return view('questions.show', compact('question'));
     }
 
@@ -53,8 +54,7 @@ class QuestionController extends Controller
 
     public function destroy(Question $question)
     {
-        $question->delete();
-
+        $this->questionService->delete($question);
         return redirect()->route('admin.questions.index')->with('success', 'Question deleted successfully');
     }
 }

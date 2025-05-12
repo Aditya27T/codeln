@@ -12,12 +12,13 @@ class MaterialController extends Controller
 {
     public function index()
     {
-        $materials = Material::orderBy('order')->get();
+        $materials = $this->materialService->all();
         return view('materials.index', compact('materials'));
     }
 
-    public function show(Material $material)
+    public function show($id)
     {
+        $material = $this->materialService->find($id);
         // Render markdown ke HTML
         try {
             $converter = new \League\CommonMark\GithubFlavoredMarkdownConverter();
