@@ -16,9 +16,26 @@
     <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/css/custom.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gray-50">
+<body class="font-sans antialiased text-gray-800 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
     <!-- Navigation -->
-    <x-nav-link active="home" />
+    <nav class="bg-white dark:bg-gray-800 shadow-sm transition-colors duration-300">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <i class="fas fa-code text-indigo-600 dark:text-indigo-400 text-2xl mr-2"></i>
+                    <a href="/" class="text-xl font-bold text-indigo-600 dark:text-indigo-400">CodeIn</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Dark Mode Toggle -->
+                    <button id="darkmode-toggle" class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none transition-colors" aria-label="Toggle dark mode">
+                        <span id="icon-sun" class="text-lg">☀️</span>
+                        <span id="icon-moon" class="text-lg hidden">🌙</span>
+                    </button>
+                    <a href="/" class="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Home</a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
     <!-- Main Content -->
     {{ $slot }}
@@ -92,5 +109,6 @@
             });
         });
     </script>
+    <script src="/js/darkmode.js"></script>
 </body>
 </html>

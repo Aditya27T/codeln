@@ -57,34 +57,34 @@
                                 <option value="csharp" {{ ($userProgress && $userProgress->language === 'csharp') || (!$userProgress && $question->default_language === 'csharp') ? 'selected' : '' }}>C#</option>
                                 <option value="typescript" {{ ($userProgress && $userProgress->language === 'typescript') || (!$userProgress && $question->default_language === 'typescript') ? 'selected' : '' }}>TypeScript</option>
                             </select>
-                            <button type="button" id="template-btn" class="ml-2 bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded text-xs flex items-center">
+                            <button type="button" id="template-btn" class="ml-2 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-200 px-2 py-1 rounded text-xs flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                                 Apply Template
                             </button>
                             <label for="run-stdin" class="ml-4 text-sm">Input (stdin):</label>
-                            <input id="run-stdin" type="text" class="border rounded p-1 text-sm w-40" placeholder="Optional input">
+                            <input id="run-stdin" type="text" class="border rounded p-1 text-sm w-40 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-400" placeholder="Optional input">
                             <button type="button" id="run-btn" class="ml-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded">
                                 <i class="fas fa-play mr-1"></i> Run
                             </button>
                         </div>
                         
                         <div class="mb-4">
-                            <textarea name="code" id="code-editor" class="w-full h-96 font-mono text-sm p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">{{ $initialCode }}</textarea>
+                            <textarea name="code" id="code-editor" class="w-full h-96 font-mono text-sm p-4 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-400">{{ $initialCode }}</textarea>
                         </div>
                         
                         <div id="run-output-card" class="hidden mb-4">
-                            <div class="rounded-lg shadow-md bg-gray-900 overflow-hidden">
+                            <div class="rounded-lg shadow-md bg-gray-900 dark:bg-gray-800 overflow-hidden">
                                 <div class="flex border-b border-gray-800">
-                                    <div class="px-4 py-2 text-xs font-bold text-green-300">Output</div>
-                                    <div class="px-4 py-2 text-xs font-bold text-red-300">Error</div>
-                                    <div class="px-4 py-2 text-xs font-bold text-blue-300">Exit Code</div>
+                                    <div class="px-4 py-2 text-xs font-bold text-green-300 dark:text-green-300">Output</div>
+                                    <div class="px-4 py-2 text-xs font-bold text-red-300 dark:text-red-300">Error</div>
+                                    <div class="px-4 py-2 text-xs font-bold text-blue-300 dark:text-blue-300">Exit Code</div>
                                 </div>
                                 <div class="grid grid-cols-3 divide-x divide-gray-800">
-                                    <pre id="run-output-stdout" class="bg-gray-900 text-green-200 font-mono text-xs p-3 whitespace-pre-wrap break-words">-</pre>
-                                    <pre id="run-output-stderr" class="bg-gray-900 text-red-200 font-mono text-xs p-3 whitespace-pre-wrap break-words">-</pre>
-                                    <pre id="run-output-exit" class="bg-gray-900 text-blue-200 font-mono text-xs p-3 whitespace-pre-wrap break-words">-</pre>
+                                    <pre id="run-output-stdout" class="bg-gray-900 dark:bg-gray-800 text-green-200 dark:text-green-200 font-mono text-xs p-3 whitespace-pre-wrap break-words">-</pre>
+                                    <pre id="run-output-stderr" class="bg-gray-900 dark:bg-gray-800 text-red-200 dark:text-red-200 font-mono text-xs p-3 whitespace-pre-wrap break-words">-</pre>
+                                    <pre id="run-output-exit" class="bg-gray-900 dark:bg-gray-800 text-blue-200 dark:text-blue-200 font-mono text-xs p-3 whitespace-pre-wrap break-words">-</pre>
                                 </div>
                             </div>
                         </div>
@@ -95,7 +95,7 @@
                             </svg>
                             Minta Saran AI
                         </button>
-                        <div id="ai-feedback" class="bg-purple-50 text-purple-900 rounded p-3 text-sm mb-4 hidden"></div>
+                        <div id="ai-feedback" class="bg-purple-50 dark:bg-purple-900 text-purple-900 dark:text-purple-100 rounded p-3 text-sm mb-4 hidden"></div>
                         
                         <div class="flex justify-end">
                             <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition flex items-center">

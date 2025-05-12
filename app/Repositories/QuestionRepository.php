@@ -9,6 +9,21 @@ class QuestionRepository
     {
         return Question::all();
     }
+
+    public function searchAndFilter($search = null, $level = null)
+    {
+        $query = Question::query();
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%$search%")
+                  ->orWhere('description', 'like', "%$search%");
+            });
+        }
+        if ($level) {
+            $query->where('difficulty', $level);
+        }
+        return $query->get();
+    }
     public function find($id)
     {
         return Question::findOrFail($id);

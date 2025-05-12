@@ -28,6 +28,11 @@ class MaterialService
     {
         return $this->materialRepository->all();
     }
+
+    public function searchAndFilter($search = null)
+    {
+        return $this->materialRepository->searchAndFilter($search);
+    }
     public function find($id)
     {
         return $this->materialRepository->find($id);

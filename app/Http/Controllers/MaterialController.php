@@ -10,9 +10,10 @@ use App\Services\MaterialService;
 
 class MaterialController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $materials = $this->materialService->all();
+        $search = $request->input('search');
+        $materials = $this->materialService->searchAndFilter($search);
         return view('materials.index', compact('materials'));
     }
 

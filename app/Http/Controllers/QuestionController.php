@@ -10,9 +10,11 @@ use App\Services\QuestionService;
 
 class QuestionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $questions = $this->questionService->all();
+        $search = $request->input('search');
+        $level = $request->input('level');
+        $questions = $this->questionService->searchAndFilter($search, $level);
         return view('questions.index', compact('questions'));
     }
 
